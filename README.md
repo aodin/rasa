@@ -11,3 +11,7 @@ To create a project using the `rasa` template:
 
 
 ### Apps
+
+To create an app using the `rasa` template:
+
+    python manage.py startapp --template=rasa/app_template appname
