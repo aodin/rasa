@@ -109,12 +109,13 @@ def alter_pg_user(password, user='postgres'):
     sudo("""psql -c "ALTER USER {user} with password '{password}';" """.format(user=user, password=password), user='postgres')
 
 
-def setup_django(project):
+def setup_django(project, directory='/srv'):
     """
     Run django's syncdb and collectstatic in its virtualenv
     """
-    python = '/srv/{project}/env/bin/python'.format(project=project)
-    manage = '/srv/{project}/{project}/manage.py'.format(project=project)
+    src = os.path.join(directory, project)
+    python = os.path.join(src, 'env', 'bin', 'python')
+    manage = os.path.join(src, 'manage.py')
 
     # Do not accept input during syncdb, we will create a superuser ourselves
     sudo('{python} {manage} syncdb --verbosity=0 --noinput'.format(python=python, manage=manage))
@@ -152,26 +153,25 @@ def update(project='{{ project_name }}', syncdb=False, reset=False, remote='orig
     sudo('service {project} restart'.format(project=project))
 
 
-def deploy(git_repo, project='{{ project_name }}', upgrade_ubuntu=True):
+def deploy(git_repo, skip_setup=False, project='{{ project_name }}'):
     """
     The master deploy script.
-    Examples:
-    fab -H ubuntu@54.244.224.30 deploy
-    fab -H root@104.131.132.143 deploy
+    Example:
+    fab -H user@server deploy:https://github.com/user/repo.git
     """
     # Ubuntu setup
-    if upgrade_ubuntu:
+    if not skip_setup:
         update_ubuntu()
         setup_ubuntu()
         upgrade_pip()
 
     # Fun starts here
-    clone()
+    clone(git_repo)
     setup_env(project)
     server_ln(project)
     create_pg_db(project)
-    alter_pg_user('{{ secret_key|slice:":12" }}')
+    alter_pg_user('badpassword')
     setup_django(project)
 
     # Restart
-    restart_servers(project)
+    restart(project)
