@@ -1,11 +1,6 @@
 Rasa
 ====
 
-A starting point for Django 1.5
+To create a Django project using the `rasa` template:
 
-### Projects
-
-To create a project using the `rasa` template:
-
-    django-admin.py startproject --template=rasa/project_template --extension=py,ini,conf,nginx projectname
-
+    django-admin.py startproject --template=https://github.com/aodin/rasa/archive/master.zip --extension=py,ini,conf,nginx <projectname>
