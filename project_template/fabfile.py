@@ -137,7 +137,7 @@ def update(project='{{ project_name }}', syncdb=False, reset=False, remote='orig
     """
     src = os.path.join(directory, project)
     python = os.path.join(src, 'env', 'bin', 'python')
-    manage = os.path.join(src, project, 'manage.py')
+    manage = os.path.join(src, 'manage.py')
 
     with cd(src):
         if reset:

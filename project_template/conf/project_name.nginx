@@ -3,11 +3,11 @@ server {
     #listen   [::]:80 default ipv6only=on; ## listen for ipv6
 
     location /static {
-        alias /srv/{{ project_name }}/{{ project_name }}/static/;
+        alias /srv/{{ project_name }}/static/;
     }
 
     location /media {
-        alias /srv/{{ project_name }}/{{ project_name }}/media/;
+        alias /srv/{{ project_name }}/media/;
     }
 
     location / {
