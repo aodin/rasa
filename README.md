@@ -9,7 +9,7 @@ A [Django](https://www.djangoproject.com/) project template that includes a [Fab
 
 2. Run the `startproject` command using the `rasa` project template.
 
-    django-admin.py startproject --template=rasa/project_template/ --extension=py,ini,conf,nginx <project_name>
+        django-admin.py startproject --template=rasa/project_template/ --extension=py,ini,conf,nginx <project_name>
 
 3. Initialize a [Git](http://git-scm.com/) repository in the included scaffolding.
 
@@ -17,7 +17,7 @@ A [Django](https://www.djangoproject.com/) project template that includes a [Fab
 
 4. Deploy by running the included `fabfile` with the URL of your Git repository. Need one? Try [GitHub](https://github.com/)! Example:
 
-    fab -H <user>@<server> deploy:"https://github.com/<user>/<repository>.git"
+        fab -H <user>@<server> deploy:"https://github.com/<user>/<repository>.git"
 
 ### Software Stack
 
