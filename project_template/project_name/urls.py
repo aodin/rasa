@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', '{{ project_name }}.views.home', name='home'),
+    url(r'^$', '{{ project_name }}.views.hello_world', name='hello_world'),
     # url(r'^{{ project_name }}/', include('{{ project_name }}.foo.urls')),
 
     # Uncomment the next line to enable the admin:
