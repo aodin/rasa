@@ -60,7 +60,7 @@ def setup_env(project, directory='/srv/', user='www-data'):
     sudo('virtualenv {dir}'.format(dir=envdir), user=user)
 
     # Load dependencies from a file
-    reqs = os.path.join(directory, project, 'requirements.txt')
+    reqs = os.path.join(directory, project, project, 'requirements.txt')
     sudo('{dir}/bin/pip install -U -r {reqs}'.format(dir=envdir, reqs=reqs), user=user)
 
 
@@ -74,10 +74,10 @@ def server_ln(project):
     View all services:
     service --status-all
     """
-    server_src = '/srv/{project}/conf/{project}.conf'.format(project=project)
+    server_src = '/srv/{project}/{project}/conf/{project}.conf'.format(project=project)
     server_dest = '/etc/init/{project}.conf'.format(project=project)
 
-    nginx_src = '/srv/{project}/conf/{project}.nginx'.format(project=project)
+    nginx_src = '/srv/{project}/{project}/conf/{project}.nginx'.format(project=project)
     nginx_dest = '/etc/nginx/sites-enabled/{project}'.format(project=project)
 
     # Remove any existing links at the destinations
@@ -113,9 +113,9 @@ def setup_django(project, directory='/srv'):
     """
     Run django's syncdb and collectstatic in its virtualenv
     """
-    src = os.path.join(directory, project)
-    python = os.path.join(src, 'env', 'bin', 'python')
-    manage = os.path.join(src, 'manage.py')
+    src = get_home()
+    python = get_python(src)
+    manage = get_manage(src)
 
     # Do not accept input during syncdb, we will create a superuser ourselves
     sudo('{python} {manage} syncdb --verbosity=0 --noinput'.format(python=python, manage=manage))
@@ -124,20 +124,41 @@ def setup_django(project, directory='/srv'):
 
 def restart(project='{{ project_name }}'):
     """
-    Restarts the servers.
+    Restarts the application and static servers
     """
     sudo('service {project} restart'.format(project=project))
     sudo('nginx -t')
     sudo('service nginx restart')
 
 
+def get_home(directory='/srv', project='{{ project_name }}'):
+    """
+    Get the home directory of the project
+    """
+    return os.path.join(directory, project)
+
+
+def get_python(home):
+    """
+    Get the path of the python executable
+    """
+    return os.path.join(home, 'env', 'bin', 'python')
+
+
+def get_manage(home, project='{{ project_name }}'):
+    """
+    Get the path to the project's manage.py
+    """
+    return os.path.join(home, project, 'manage.py')
+
+
 def update(project='{{ project_name }}', syncdb=False, reset=False, remote='origin', branch='master', user='www-data', directory='/srv'):
     """
     Update the project by pulling from the git repository
     """
-    src = os.path.join(directory, project)
-    python = os.path.join(src, 'env', 'bin', 'python')
-    manage = os.path.join(src, 'manage.py')
+    src = get_home()
+    python = get_python(src)
+    manage = get_manage(src)
 
     with cd(src):
         if reset:
